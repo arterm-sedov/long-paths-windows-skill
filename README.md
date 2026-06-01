@@ -1,81 +1,55 @@
-# long-paths-windows Skill
+# long-paths-windows
 
-**Your one-stop solution for Windows long path problems.**
+Fix "filename too long" errors on Windows by enabling long path support in Git and Windows Registry.
 
-This skill eliminates the dreaded "filename too long" errors on Windows, whether you're cloning a repo, installing npm packages, or building projects with deep directory structures. It combines a ready-to-use PowerShell utility with comprehensive guidance to deliver:
+## What it fixes
 
-- **Auto-detection** — knows if you're in a git repo and whether you have admin rights
-- **Unified fix** — configures both Git (`core.longpaths`) and Windows Registry (`LongPathsEnabled`) in one command
-- **Smart fallback** — HKCU when you don't have admin, HKLM when you do
-- **Status checking** — see exactly what's configured and what's missing
-- **Verification** — confirm everything is working after applying fixes
+- `git clone` fails with `filename too long`
+- `git checkout` fails on deep directory trees
+- `npm install` / `yarn` / `pnpm` errors in `node_modules`
+- Any operation hitting Windows 260-char `MAX_PATH` limit
 
-Long path issues become a one-command solve instead of a half-hour of searching forums.
+## How it works
 
-## How to Use It
+A single PowerShell script that detects your environment and applies the right settings:
 
-Simply tell the agent about your long path problem:
-
-- "I'm getting 'filename too long' when cloning a git repo on Windows"
-- "npm install fails because paths are too long in node_modules"
-- "Check if long paths are enabled on my machine"
-- "Git checkout fails on deep directory trees"
-
-The skill will automatically activate, guide you to run the PowerShell utility, and explain the results.
-
-The skill will instruct the agent to:
-
-1. Check current status with `Enable-LongPaths.ps1 -Mode Status`
-2. Apply fixes with `Enable-LongPaths.ps1 -Mode Enable`
-3. Verify with `Enable-LongPaths.ps1 -Mode Fix`
-4. Explain reboot requirements if registry was modified
-5. Reference the detailed guide for manual troubleshooting if needed
+- `git config core.longpaths true` (local or global, depending on whether you're in a repo)
+- `LongPathsEnabled = 1` in Windows Registry (HKLM with admin, HKCU without)
 
 ## Installation
-
-### With the `skills` CLI (recommended)
-
-Uses the [Vercel Labs `skills` CLI](https://www.npmjs.com/package/skills). Add `-g` for a global install. Add `-a <agent-name>` to target a specific agent.
 
 ```bash
 npx skills add arterm-sedov/long-paths-windows-skill --skill long-paths-windows
 ```
 
-### Manual (clone and copy)
-
-1. Clone and enter this repository:
+**Manual install:**
 
 ```bash
 git clone https://github.com/arterm-sedov/long-paths-windows-skill.git
-cd long-paths-windows-skill
-```
-
-2. Copy the skill folder into your agent's skills directory:
-
-```bash
-rm -rf ~/.agents/skills/long-paths-windows
 cp -r skills/long-paths-windows ~/.agents/skills/long-paths-windows
 ```
 
 ```powershell
-Remove-Item -Recurse -Force ~/.agents/skills/long-paths-windows -ErrorAction SilentlyContinue
 Copy-Item -Recurse skills\long-paths-windows ~\.agents\skills\long-paths-windows
 ```
 
-Restart the agent or reload skills for the new skill discovery.
+Restart the agent afterwards.
 
-## What's Included
+## Usage
+
+After the skill is installed, trigger it by describing your error:
+
+> "I'm getting 'filename too long' when cloning a repo on Windows"
+
+The agent will run `Enable-LongPaths.ps1 -Mode Enable`, apply both Git and registry settings, and tell you if a restart is needed.
+
+## What's in it
 
 ```
 skills/long-paths-windows/
-├── SKILL.md                        # Skill instructions
+├── SKILL.md                       # Agent instructions
 ├── scripts/
-│   └── Enable-LongPaths.ps1        # Ready-to-use PowerShell utility
-├── references/
-│   └── long-paths-guide.md         # Full reference guide
+│   └── Enable-LongPaths.ps1       # Status / Enable / Fix utility
+└── references/
+    └── long-paths-guide.md        # Manual steps & troubleshooting
 ```
-
-The PowerShell script supports three modes:
-- **Status** — check current configuration
-- **Enable** — apply all settings with smart auto-detection
-- **Fix** — enable + verify
