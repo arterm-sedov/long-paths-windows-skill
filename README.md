@@ -35,7 +35,29 @@ Copy-Item -Recurse skills\long-paths-windows ~\.agents\skills\long-paths-windows
 
 Restart the agent afterwards.
 
-## Usage
+## Manual usage (without an agent)
+
+Clone the repo, then run the script directly:
+
+```powershell
+# Check what's broken
+powershell -ExecutionPolicy Bypass -File .\scripts\Enable-LongPaths.ps1 -Mode Status
+
+# Fix everything (auto-detects git repo, admin rights, etc.)
+powershell -ExecutionPolicy Bypass -File .\scripts\Enable-LongPaths.ps1 -Mode Enable -Force
+```
+
+Modes:
+
+| Command | Does |
+|---------|------|
+| `-Mode Status` | Show current Git + registry config |
+| `-Mode Enable` | Apply all fixes |
+| `-Mode Fix` | Enable then verify |
+
+Registry changes via HKCU (the default without admin) need a logoff/logon to take effect. HKLM changes take effect immediately.
+
+## Usage with AI agents
 
 After the skill is installed, trigger it by describing your error:
 
