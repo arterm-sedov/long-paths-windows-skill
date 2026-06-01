@@ -33,12 +33,20 @@ The skill will instruct the agent to:
 
 ## Installation
 
-### Manual (clone and copy)
+### With the `skills` CLI (recommended)
 
-1. Clone this repository:
+Uses the [Vercel Labs `skills` CLI](https://www.npmjs.com/package/skills). Add `-g` for a global install. Add `-a <agent-name>` to target a specific agent.
 
 ```bash
-git clone https://github.com/your-username/long-paths-windows-skill.git
+npx skills add arterm-sedov/long-paths-windows-skill --skill long-paths-windows
+```
+
+### Manual (clone and copy)
+
+1. Clone and enter this repository:
+
+```bash
+git clone https://github.com/arterm-sedov/long-paths-windows-skill.git
 cd long-paths-windows-skill
 ```
 
@@ -51,7 +59,7 @@ cp -r skills/long-paths-windows ~/.agents/skills/long-paths-windows
 
 ```powershell
 Remove-Item -Recurse -Force ~/.agents/skills/long-paths-windows -ErrorAction SilentlyContinue
-Copy-Item -Recurse skills\long-paths-windows ~/.agents\skills\long-paths-windows
+Copy-Item -Recurse skills\long-paths-windows ~\.agents\skills\long-paths-windows
 ```
 
 Restart the agent or reload skills for the new skill discovery.
